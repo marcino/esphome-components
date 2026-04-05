@@ -39,7 +39,7 @@ namespace
         // Frames with APA are successfully decoded by this driver
         // Frames with APT are not - and their content is unknown - perhaps it broadcasts two data formats?
         di.addDetection(MANUFACTURER_APA,  0x02,  0x01);
-        di.addDetection(0x1a43,           0x02, 0x01); // FRC manufacturer
+        di.addDetection(MANUFACTURER_FRC, 0x02, 0x01); // FRC manufacturer
         //di.addDetection(MANUFACTURER_APT,  0x02,  0x01);
         di.setConstructor([](MeterInfo& mi, DriverInfo& di){ return std::shared_ptr<Meter>(new Driver(mi, di)); });
     });

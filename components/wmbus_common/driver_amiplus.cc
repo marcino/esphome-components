@@ -206,8 +206,7 @@ namespace
             Quantity::Power,
             VifScaling::Auto, DifSignedness::Signed,
             FieldMatcher::build()
-            .set(MeasurementType::Maximum)
-            .set(VIFRange::AnyPowerVIF)
+            .set(DifVifKey("1B2B"))
             );
 
         addNumericFieldWithExtractor(

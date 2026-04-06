@@ -195,19 +195,20 @@ bool decrypt_TPL_AES_CBC_IV(Telegram *t, std::vector<uchar> &frame,
   std::string s = bin2hex(ivv);
   debug("(TPL) IV %s\n", s.c_str());
 
-  uchar buffer_data[num_bytes_to_decrypt];
-  memcpy(buffer_data, safeButUnsafeVectorPtr(buffer), num_bytes_to_decrypt);
-  uchar decrypted_data[num_bytes_to_decrypt];
+  static std::vector<uchar> buffer_data;
+  static std::vector<uchar> decrypted_data;
+  buffer_data.resize(num_bytes_to_decrypt);
+  decrypted_data.resize(num_bytes_to_decrypt);
+  memcpy(buffer_data.data(), safeButUnsafeVectorPtr(buffer), num_bytes_to_decrypt);
 
-  AES_CBC_decrypt_buffer(decrypted_data, buffer_data, num_bytes_to_decrypt,
+  AES_CBC_decrypt_buffer(decrypted_data.data(), buffer_data.data(), num_bytes_to_decrypt,
                          safeButUnsafeVectorPtr(aeskey), iv);
 
   // Remove the encrypted bytes.
   frame.erase(pos, frame.end());
 
   // Insert the decrypted bytes.
-  frame.insert(frame.end(), decrypted_data,
-               decrypted_data + num_bytes_to_decrypt);
+  frame.insert(frame.end(), decrypted_data.begin(), decrypted_data.end());
 
   debugPayload("(TPL) decrypted ", frame, pos);
 
@@ -273,19 +274,20 @@ bool decrypt_TPL_AES_CBC_NO_IV(Telegram *t, std::vector<uchar> &frame,
   std::string s = bin2hex(ivv);
   debug("(TPL) IV %s\n", s.c_str());
 
-  uchar buffer_data[num_bytes_to_decrypt];
-  memcpy(buffer_data, safeButUnsafeVectorPtr(buffer), num_bytes_to_decrypt);
-  uchar decrypted_data[num_bytes_to_decrypt];
+  static std::vector<uchar> buffer_data;
+  static std::vector<uchar> decrypted_data;
+  buffer_data.resize(num_bytes_to_decrypt);
+  decrypted_data.resize(num_bytes_to_decrypt);
+  memcpy(buffer_data.data(), safeButUnsafeVectorPtr(buffer), num_bytes_to_decrypt);
 
-  AES_CBC_decrypt_buffer(decrypted_data, buffer_data, num_bytes_to_decrypt,
+  AES_CBC_decrypt_buffer(decrypted_data.data(), buffer_data.data(), num_bytes_to_decrypt,
                          safeButUnsafeVectorPtr(aeskey), iv);
 
   // Remove the encrypted bytes and any potentially not decryptes bytes after.
   frame.erase(pos, frame.end());
 
   // Insert the decrypted bytes.
-  frame.insert(frame.end(), decrypted_data,
-               decrypted_data + num_bytes_to_decrypt);
+  frame.insert(frame.end(), decrypted_data.begin(), decrypted_data.end());
 
   debugPayload("(TPL) decrypted ", frame, pos);
 
@@ -297,3 +299,4 @@ bool decrypt_TPL_AES_CBC_NO_IV(Telegram *t, std::vector<uchar> &frame,
 
   return true;
 }
+
